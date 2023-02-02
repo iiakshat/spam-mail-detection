@@ -16,4 +16,4 @@ jobs:
       - name: Push to hub
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: git push https://akshatsanghvi:$HF_TOKEN@huggingface.co/spaces/akshatsanghvi/spam-email-detection main
+        run: git push --force https://akshatsanghvi:$HF_TOKEN@huggingface.co/spaces/akshatsanghvi/spam-email-detection main
