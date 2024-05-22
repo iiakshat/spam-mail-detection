@@ -11,4 +11,4 @@ def pred(Email):
         return "👍"
 
 iface = gr.Interface(fn=pred, inputs="text", outputs="text", allow_flagging="never", description="Enter Your Message Below :")
-iface.launch(share=True)
+iface.launch()
