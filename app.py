@@ -17,10 +17,9 @@ def isPhishing(link):
 
     features = URLFeatureExtraction.featureExtraction(link)
     print(features)
-    
     prediction = model2.predict([features])
-    print(prediction)
-
+    print(prediction[0])
+    
     df = df._append({'URL': link, 'Phishy?': "UnSafe" if prediction[0] else "Safe"}, ignore_index=True)
     return prediction[0]
 
@@ -32,17 +31,25 @@ def check_URL(Email):
     extractor = URLExtract()
     urls = extractor.find_urls(Email)
     n_urls = len(urls)
+
+    if not urls: return -1
     if urls:
         bad_urls = sum([isPhishing(url) for url in urls])
     else:
         bad_urls = 0
-    print("Out of {} urls {} are phishing".format(n_urls, bad_urls))
+    print("Out of {} urls {} are legitimate.".format(n_urls, n_urls - bad_urls))
 
     return bad_urls
 
 def check_Mail(Email):
-    state = max(URLFeatureExtraction.state, 0)
-    return [isSpam(Email), check_URL(Email), state, df]
+    bad_urls = check_URL(Email)
+    if bad_urls==-1:
+        return [isSpam(Email), 0, 'Safe', df]
+    
+    if URLFeatureExtraction.flag or bad_urls:
+        return [isSpam(Email), bad_urls, 'Risky', df]
+    
+    return [isSpam(Email), bad_urls, 'Safe', df]
 
 iface = gr.Interface(
     fn=check_Mail,
@@ -54,6 +61,4 @@ iface = gr.Interface(
         gr.Dataframe(label="Insights", interactive=False)
     ]
 )
-
-# Launch the Gradio app
 iface.launch()

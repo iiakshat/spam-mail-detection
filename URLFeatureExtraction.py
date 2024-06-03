@@ -178,7 +178,7 @@ def forwarding(response):
     else:
       return 1
 
-state = 0
+flag = False
 def featureExtraction(url):
 
   new_url = url
@@ -199,7 +199,7 @@ def featureExtraction(url):
         response = ""
     
   url = new_url
-  print("URL", url)
+  print("URL:\t", url)
 
   features = []
   features.append(havingIP(url))
@@ -212,15 +212,16 @@ def featureExtraction(url):
   features.append(prefixSuffix(url))
   
   try:
-    global state
+    global flag
 
     domain_name = whois.whois(urlparse(url).netloc)
 
     if domain_name.get('domain_name'):
-      state = 0
+      pass
 
     else:
-      state = 1
+      flag = True
+
     dns = 0 if socket.gethostbyname(domain_name.domain_name[0]) else 1
   except:
     dns = 1
@@ -240,21 +241,3 @@ def featureExtraction(url):
 feature_names = ['Domain', 'Have_IP', 'Have_At', 'URL_Length', 'URL_Depth','Redirection', 
                       'https_Domain', 'TinyURL', 'Prefix/Suffix', 'DNS_Record', 'Web_Traffic', 
                       'Domain_Age', 'Domain_End', 'iFrame', 'Mouse_Over','Right_Click', 'Web_Forwards', 'Label']
-
-# I @ L D R D t P D T A E i M R F  L
-#     . .         . . .         .
-
-# 0,0,1,3,0,0,0,0,0,1,0,1,0,0,1,0  0
-# 0,0,1,1,0,0,0,0,0,1,0,1,0,0,1,0  Y
-# 0,0,0,1,0,0,0,0,1,0,1,1,0,0,1,0  -
-
-#                         . .   
-# 0,0,1,1,0,0,0,0,1,1,1,1,1,1,1,1  0
-# 0,0,1,0,0,0,0,0,0,1,1,1,0,0,1,0
-# 0,0,0,0,0,0,0,0,1,0,1,1,0,0,1,0  -
-
-# 0,0,1,3,0,0,0,0,0,0,1,1,0,0,1,0  1
-# 0,0,1,0,0,0,0,0,0,0,1,1,0,0,1,0
-# 0,0,0,0,0,0,0,0,1,1,1,1,0,0,1,0  -
-
-# Prints : site. history. array. pred.
